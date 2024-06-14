@@ -3,6 +3,7 @@
     <testsuites>
         <testsuite name="My DTO Lib Test Suite">
             <file>./tests/MessageDTOTest.php</file>
+            <file>./tests/MessageStoreDTOTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>

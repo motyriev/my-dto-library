@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Motyriev\MyDTOLibrary;
 
-use JetBrains\PhpStorm\ArrayShape;
-use JsonSerializable;
-
-class MessageStoreDTO implements JsonSerializable
+class MessageStoreDTO extends AbstractDTO implements Validable
 {
     public function __construct(
         public readonly int    $userId,
@@ -17,35 +14,12 @@ class MessageStoreDTO implements JsonSerializable
     {
     }
 
-    #[ArrayShape(['userId' => "int", 'chatId' => "int", 'body' => "string"])]
-    public function jsonSerialize(): array
-    {
-        return $this->toArray();
-    }
-
-    #[ArrayShape(['userId' => "int", 'chatId' => "int", 'body' => "string"])]
-    public function toArray(): array
+    public static function rules(): array
     {
         return [
-            'userId' => $this->userId,
-            'chatId' => $this->chatId,
-            'body'   => $this->body,
+            'userId' => ['required', 'numeric'],
+            'chatId' => ['required', 'numeric'],
+            'body'   => ['required', 'string'],
         ];
-    }
-
-    public function toJson(): string
-    {
-        return json_encode($this);
-    }
-
-    public static function fromArray(array $data): self
-    {
-        return new self($data['userId'], $data['chatId'], $data['body']);
-    }
-
-    public static function fromJson(string $json): self
-    {
-        $data = json_decode($json, true);
-        return new self($data['userId'], $data['chatId'], $data['body']);
     }
 }

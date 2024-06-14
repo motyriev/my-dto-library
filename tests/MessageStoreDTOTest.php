@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Motyriev\MyDTOLibrary\Tests;
 
 use Motyriev\MyDTOLibrary\MessageStoreDTO;
@@ -10,7 +12,7 @@ class MessageStoreDTOTest extends TestCase
     public function testDTOCreation()
     {
         $userId = 1;
-        $chatId = 1;
+        $chatId = 2;
         $body = 'Hello DTO';
         $dto = new MessageStoreDTO($userId, $chatId, $body);
 
@@ -22,7 +24,7 @@ class MessageStoreDTOTest extends TestCase
     public function testToArray()
     {
         $userId = 1;
-        $chatId = 1;
+        $chatId = 2;
         $body = 'Hello array';
         $dto = new MessageStoreDTO($userId, $chatId, $body);
 
@@ -37,19 +39,22 @@ class MessageStoreDTOTest extends TestCase
     public function testToJson()
     {
         $userId = 1;
-        $chatId = 1;
+        $chatId = 2;
         $body = 'Hello json';
 
         $dto = new MessageStoreDTO($userId, $chatId, $body);
-        $expectedJson = '{"userId":1,"chatId":1,"body":"Hello json"}';
+        $expectedJson = '{"userId":1,"chatId":2,"body":"Hello json"}';
         $this->assertJsonStringEqualsJsonString($expectedJson, $dto->toJson());
     }
 
+    /**
+     * @throws \ReflectionException
+     */
     public function testFromArray()
     {
         $arr = [
             'userId'    => 1,
-            'chatId'    => 1,
+            'chatId'    => 2,
             'body'      => 'Hello DTO',
         ];
 
@@ -61,13 +66,16 @@ class MessageStoreDTOTest extends TestCase
         $this->assertEquals($arr['body'], $dto->body);
     }
 
+    /**
+     * @throws \ReflectionException
+     */
     public function testFromJson()
     {
         $userId = 1;
-        $chatId = 1;
+        $chatId = 2;
         $body = 'Hello DTO';
 
-        $json = '{"userId":1,"chatId":1,"body":"Hello DTO"}';
+        $json = '{"userId":1,"chatId":2,"body":"Hello DTO"}';
 
         $dto = MessageStoreDTO::fromJson($json);
         $this->assertIsObject($dto);
