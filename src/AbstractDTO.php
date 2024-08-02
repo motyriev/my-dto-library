@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Motyriev\MyDTOLibrary;
 
-use DateTime;
+use Carbon\Carbon;
 use JsonSerializable;
 use ReflectionClass;
 
@@ -18,7 +18,11 @@ abstract class AbstractDTO implements JsonSerializable
         $json = [];
         foreach ($properties as $property) {
             if ($property->isInitialized($this)) {
-                $json[$property->getName()] = $property->getValue($this);
+                $val = $property->getValue($this);
+                if ($property->getType()->getName() == 'DateTime' && $val instanceof \DateTime) {
+                    $val = Carbon::parse($val)->toIso8601ZuluString();
+                }
+                $json[$property->getName()] = $val;
             }
         }
 
@@ -35,22 +39,20 @@ abstract class AbstractDTO implements JsonSerializable
         return json_encode($this);
     }
 
-    /**
-     * @throws \ReflectionException
-     */
     public static function fromArray(array $data): static
     {
         $child = static::class;
         $reflectionChildClass = new ReflectionClass($child);
 
         $args = [];
+
         foreach ($reflectionChildClass->getProperties() as $property) {
             if ($val = $data[$property->getName()]) {
                 if ($property->getType()->getName() == 'DateTime' && !$val instanceof \DateTime) {
-                    if (is_array($val) && isset($val['date']) && isset($val['timezone'])) {
-                        $val = DateTime::createFromFormat('Y-m-d H:i:s.u', $val['date'], new \DateTimeZone($val['timezone']));
-                    } else {
-                        $val = DateTime::createFromFormat('Y-m-d H:i:s.u', $val, new \DateTimeZone('UTC'));
+                    try {
+                        $val = Carbon::parse($val)->toDateTime();
+                    } catch (\Exception $e) {
+                        throw new \InvalidArgumentException('Invalid date format for property ' . $property->getName());
                     }
                 }
                 $args[$property->getName()] = $val;
@@ -60,9 +62,6 @@ abstract class AbstractDTO implements JsonSerializable
         return new $child(...$args);
     }
 
-    /**
-     * @throws \ReflectionException
-     */
     public static function fromJson(string $json): static
     {
         $data = json_decode($json, true);

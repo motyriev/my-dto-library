@@ -7,6 +7,7 @@ namespace Motyriev\MyDTOLibrary;
 class MessageStoreDTO extends AbstractDTO implements Validable
 {
     public function __construct(
+        public readonly string $traceId,
         public readonly int    $userId,
         public readonly int    $chatId,
         public readonly string $body,
@@ -17,9 +18,10 @@ class MessageStoreDTO extends AbstractDTO implements Validable
     public static function rules(): array
     {
         return [
-            'userId' => ['required', 'numeric'],
-            'chatId' => ['required', 'numeric'],
-            'body'   => ['required', 'string'],
+            'traceId' => ['required', 'string'],
+            'userId'  => ['required', 'numeric'],
+            'chatId'  => ['required', 'numeric'],
+            'body'    => ['required', 'string'],
         ];
     }
 }
