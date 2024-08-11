@@ -2,8 +2,11 @@
 <phpunit bootstrap="vendor/autoload.php">
     <testsuites>
         <testsuite name="My DTO Lib Test Suite">
+            <file>./tests/AddFriendRequestDTOTest.php</file>
+            <file>./tests/ManageFriendRequestDTOTest.php</file>
             <file>./tests/MessageDTOTest.php</file>
             <file>./tests/MessageStoreDTOTest.php</file>
+            <file>./tests/UserPairDTOTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>

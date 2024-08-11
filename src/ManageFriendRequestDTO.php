@@ -19,7 +19,7 @@ class ManageFriendRequestDTO extends AbstractDTO implements Validable
         return [
             'traceId'   => ['required', 'string'],
             'requestId' => ['required', 'numeric'],
-            'status'    => ['required', 'string'],
+            'status'    => ['required', 'string', 'in:accepted,declined'],
         ];
     }
 }

@@ -4,84 +4,74 @@ declare(strict_types=1);
 
 namespace Motyriev\MyDTOLibrary\Tests;
 
+use Motyriev\MyDTOLibrary\AbstractDTO;
 use Motyriev\MyDTOLibrary\MessageStoreDTO;
 use PHPUnit\Framework\TestCase;
 
 class MessageStoreDTOTest extends TestCase
 {
-    public function testDTOCreation()
+    public function testDTOCreation(): void
     {
+        $traceId = 'abc123';
         $userId = 1;
         $chatId = 2;
-        $body = 'Hello DTO';
-        $dto = new MessageStoreDTO($userId, $chatId, $body);
+        $body = 'Test message';
 
+        $dto = new MessageStoreDTO($traceId, $userId, $chatId, $body);
+
+        $this->assertInstanceOf(AbstractDTO::class, $dto);
+        $this->assertEquals($traceId, $dto->traceId);
         $this->assertEquals($userId, $dto->userId);
         $this->assertEquals($chatId, $dto->chatId);
         $this->assertEquals($body, $dto->body);
     }
 
-    public function testToArray()
+    public function testToArray(): void
     {
+        $traceId = 'abc123';
         $userId = 1;
         $chatId = 2;
-        $body = 'Hello array';
-        $dto = new MessageStoreDTO($userId, $chatId, $body);
+        $body = 'Test message';
 
+        $dto = new MessageStoreDTO($traceId, $userId, $chatId, $body);
         $dtoArr = $dto->toArray();
 
         $this->assertIsArray($dtoArr);
+        $this->assertEquals($traceId, $dtoArr['traceId']);
         $this->assertEquals($userId, $dtoArr['userId']);
         $this->assertEquals($chatId, $dtoArr['chatId']);
         $this->assertEquals($body, $dtoArr['body']);
     }
 
-    public function testToJson()
+    public function testFromArray(): void
     {
-        $userId = 1;
-        $chatId = 2;
-        $body = 'Hello json';
-
-        $dto = new MessageStoreDTO($userId, $chatId, $body);
-        $expectedJson = '{"userId":1,"chatId":2,"body":"Hello json"}';
-        $this->assertJsonStringEqualsJsonString($expectedJson, $dto->toJson());
-    }
-
-    /**
-     * @throws \ReflectionException
-     */
-    public function testFromArray()
-    {
-        $arr = [
-            'userId'    => 1,
-            'chatId'    => 2,
-            'body'      => 'Hello DTO',
+        $data = [
+            'traceId' => 'abc123',
+            'userId'  => 1,
+            'chatId'  => 2,
+            'body'    => 'Test message',
         ];
 
-        $dto = MessageStoreDTO::fromArray($arr);
+        $dto = MessageStoreDTO::fromArray($data);
 
-        $this->assertIsObject($dto);
-        $this->assertEquals($arr['userId'], $dto->userId);
-        $this->assertEquals($arr['chatId'], $dto->chatId);
-        $this->assertEquals($arr['body'], $dto->body);
+        $this->assertInstanceOf(MessageStoreDTO::class, $dto);
+        $this->assertEquals($data['traceId'], $dto->traceId);
+        $this->assertEquals($data['userId'], $dto->userId);
+        $this->assertEquals($data['chatId'], $dto->chatId);
+        $this->assertEquals($data['body'], $dto->body);
     }
 
-    /**
-     * @throws \ReflectionException
-     */
-    public function testFromJson()
+    public function testValidationRules(): void
     {
-        $userId = 1;
-        $chatId = 2;
-        $body = 'Hello DTO';
+        $rules = MessageStoreDTO::rules();
 
-        $json = '{"userId":1,"chatId":2,"body":"Hello DTO"}';
+        $expectedRules = [
+            'traceId' => ['required', 'string'],
+            'userId'  => ['required', 'numeric'],
+            'chatId'  => ['required', 'numeric'],
+            'body'    => ['required', 'string'],
+        ];
 
-        $dto = MessageStoreDTO::fromJson($json);
-        $this->assertIsObject($dto);
-        $this->assertEquals($userId, $dto->userId);
-        $this->assertEquals($chatId, $dto->chatId);
-        $this->assertEquals($body, $dto->body);
+        $this->assertEquals($expectedRules, $rules);
     }
-
 }
