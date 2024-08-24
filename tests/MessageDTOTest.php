@@ -49,7 +49,6 @@ class MessageDTOTest extends TestCase
         $this->assertEquals($chatId, $dtoArr['chatId']);
         $this->assertEquals($userEmail, $dtoArr['userEmail']);
         $this->assertEquals($body, $dtoArr['body']);
-        // Изменение формата даты на ISO 8601 с UTC для соответствия фактическому значению
         $this->assertEquals($createdAt->format('Y-m-d\TH:i:s\Z'), $dtoArr['createdAt']);
     }
 

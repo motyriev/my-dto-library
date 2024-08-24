@@ -73,7 +73,7 @@ class ManageFriendRequestDTOTest extends TestCase
         $expectedRules = [
             'traceId'   => ['required', 'string'],
             'requestId' => ['required', 'numeric'],
-            'status'    => ['required', 'string', 'in:accepted,declined'], // Проверка валидности статуса
+            'status'    => ['required', 'string', 'in:accepted,declined'],
         ];
 
         $this->assertEquals($expectedRules, $rules);
